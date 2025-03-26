@@ -6,7 +6,6 @@ import {
   FiEdit2,
   FiTrash2,
   FiPlus,
-  // Removed unused icons
   FiShare2,
   FiBookmark,
   FiStar,
@@ -24,8 +23,6 @@ const NoteDetails = () => {
 
   const { currentNote, isLoading } = useSelector((state) => state.notes);
   const { token } = useSelector((state) => state.auth);
-  // User is actually used to check permissions, kept but commented to show intention
-  // const { user } = useSelector((state) => state.auth);
 
   const [noteDetails, setNoteDetails] = useState([]);
   const [newDetail, setNewDetail] = useState("");
@@ -34,126 +31,95 @@ const NoteDetails = () => {
   const [editingDetailText, setEditingDetailText] = useState("");
   const [isConfirmDeleteOpen, setIsConfirmDeleteOpen] = useState(false);
   const [isDetailLoading, setIsDetailLoading] = useState(false);
-  // We're using this in the hover UI, but React doesn't detect it
-  // So we'll use a different approach to avoid the linting error
-  // const [activeDetailId, setActiveDetailId] = useState(null);
 
-  // Update your fetchNoteDetails function to include debugging
   const fetchNoteDetails = useCallback(async () => {
     setIsDetailLoading(true);
     try {
-      console.log("Fetching note details for ID:", id);
-      console.log("Auth token available:", !!token); // Log if token exists
-
       const response = await api.get(`/notes/${id}/details`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
       });
-
-      console.log("Note details response:", response.data);
       setNoteDetails(response.data);
     } catch (error) {
-      console.error("Failed to fetch note details:", error.response || error);
       toast.error("Failed to load note details");
     } finally {
       setIsDetailLoading(false);
     }
   }, [id, token]);
 
-  // Use fetchNoteDetails in useEffect AFTER it's defined
   useEffect(() => {
-    // First, get the note
     dispatch(getNoteById(id))
       .unwrap()
       .then(() => {
-        // Only fetch details if the note was successfully retrieved
         fetchNoteDetails();
       })
       .catch((error) => {
-        console.error("Error fetching note:", error);
+        toast.error("Failed to fetch note");
       });
   }, [dispatch, id, fetchNoteDetails]);
 
-  
-  
-  // Add a new detail
   const handleAddDetail = async (e) => {
     e.preventDefault();
-
     if (!newDetail.trim()) return;
-
     try {
       const response = await api.post(
         `/notes/${id}/details`,
-        {
-          detail: newDetail,
-        },
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
+        { detail: newDetail },
+        { headers: { Authorization: `Bearer ${token}` } }
       );
-
       setNoteDetails([...noteDetails, response.data]);
       setNewDetail("");
       setIsAddingDetail(false);
       toast.success("Detail added successfully");
     } catch (error) {
-      console.error("Failed to add detail:", error);
       toast.error("Failed to add detail");
     }
   };
-  // Update a detail
+
   const handleUpdateDetail = async (detailId) => {
     if (!editingDetailText.trim()) return;
-
     try {
-      const response = await api.put(`/notes/details/${detailId}`, {
-        detail: editingDetailText,
-      });
-
+      const response = await api.put(
+        `/notes/details/${detailId}`,
+        { detail: editingDetailText },
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
       setNoteDetails(
         noteDetails.map((detail) =>
           detail._id === detailId ? response.data : detail
         )
       );
-
       setEditingDetailId(null);
       setEditingDetailText("");
       toast.success("Detail updated successfully");
     } catch (error) {
-      console.error("Failed to update detail:", error);
       toast.error("Failed to update detail");
     }
   };
 
-  // Delete a detail
   const handleDeleteDetail = async (detailId) => {
     try {
-      await api.delete(`/notes/details/${detailId}`);
-
+      await api.delete(`/notes/details/${detailId}`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
       setNoteDetails(noteDetails.filter((detail) => detail._id !== detailId));
       toast.success("Detail deleted successfully");
     } catch (error) {
-      console.error("Failed to delete detail:", error);
       toast.error("Failed to delete detail");
     }
   };
 
-  // Handle delete note
   const handleDeleteNote = async () => {
     try {
       await dispatch(deleteNote(id)).unwrap();
       toast.success("Note deleted successfully");
       navigate("/notes");
     } catch (error) {
-      toast.error(error || "Failed to delete note");
+      toast.error("Failed to delete note");
     }
   };
 
-  // Format date
   const formatDate = (dateString) => {
     return new Date(dateString).toLocaleString(undefined, {
       year: "numeric",
@@ -193,7 +159,6 @@ const NoteDetails = () => {
   return (
     <div className="max-w-4xl mx-auto px-4 py-8">
       <div className="bg-white rounded-lg shadow-md p-6">
-        {/* Note Header */}
         <div className="flex justify-between items-start mb-6">
           <h1 className="text-2xl font-bold text-gray-800">
             {currentNote.title}
@@ -216,7 +181,6 @@ const NoteDetails = () => {
           </div>
         </div>
 
-        {/* Note Meta */}
         <div className="flex flex-wrap gap-2 text-sm text-gray-500 mb-4">
           <span className="flex items-center">
             <FiClock className="mr-1" />
@@ -240,7 +204,6 @@ const NoteDetails = () => {
           )}
         </div>
 
-        {/* Tags */}
         {currentNote.tags && currentNote.tags.length > 0 && (
           <div className="flex flex-wrap gap-2 mb-6">
             <FiTag className="text-gray-500 mr-1 mt-1" />
@@ -264,7 +227,6 @@ const NoteDetails = () => {
           </div>
         )}
 
-        {/* Note Content */}
         <div className="mb-8 py-3 border-t border-b border-gray-100">
           <div className="prose max-w-none">
             {currentNote.content.split("\n").map((paragraph, idx) => (
@@ -275,7 +237,6 @@ const NoteDetails = () => {
           </div>
         </div>
 
-        {/* Note Details Section */}
         <div className="mt-6 border-t pt-4">
           <div className="flex justify-between items-center mb-4">
             <h2 className="text-xl font-semibold text-gray-800">
@@ -296,7 +257,6 @@ const NoteDetails = () => {
             </div>
           ) : (
             <div className="space-y-3">
-              {/* Add Detail Form */}
               {isAddingDetail && (
                 <form
                   onSubmit={handleAddDetail}
@@ -331,7 +291,6 @@ const NoteDetails = () => {
                 </form>
               )}
 
-              {/* Details List */}
               {noteDetails.length > 0 ? (
                 <ul>
                   {noteDetails.map((detail) => (
@@ -366,10 +325,7 @@ const NoteDetails = () => {
                           </div>
                         </div>
                       ) : (
-                        <div
-                          className="group relative"
-                          // Use inline functions instead of state for hover effects
-                        >
+                        <div className="group relative">
                           <p className="text-gray-700 whitespace-pre-wrap">
                             {detail.detail}
                           </p>
@@ -410,7 +366,6 @@ const NoteDetails = () => {
         </div>
       </div>
 
-      {/* Navigation */}
       <div className="mt-6 flex justify-between">
         <Link
           to="/notes"
@@ -435,7 +390,6 @@ const NoteDetails = () => {
         </div>
       </div>
 
-      {/* Delete Confirmation Modal */}
       <ConfirmationModal
         isOpen={isConfirmDeleteOpen}
         onClose={() => setIsConfirmDeleteOpen(false)}

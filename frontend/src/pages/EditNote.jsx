@@ -11,7 +11,6 @@ const EditNote = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  // Only destructure isLoading, we don't need currentNote
   const { isLoading } = useSelector((state) => state.notes);
   const { tags } = useSelector((state) => state.tags);
 
@@ -25,7 +24,6 @@ const EditNote = () => {
   const [isFetching, setIsFetching] = useState(true);
   const [fetchError, setFetchError] = useState(null);
 
-  // Add this helper function to strip HTML when loading content
   const stripHtml = (html) => {
     if (!html) return "";
 
@@ -39,33 +37,27 @@ const EditNote = () => {
     }
   };
 
-  // Improve the useEffect with better error handling
   useEffect(() => {
     const fetchData = async () => {
       setIsFetching(true);
       setFetchError(null);
 
       try {
-        // Fetch note data
         const noteResult = await dispatch(getNoteById(id)).unwrap();
-        console.log("Note data retrieved:", noteResult); // Debug log
+        console.log("Note data retrieved:", noteResult);
 
-        // Fetch all tags
         await dispatch(getAllTags()).unwrap();
 
-        // Set form state with note data - add extra checks
         if (!noteResult) {
           throw new Error("Note data is empty");
         }
 
         setTitle(noteResult.title || "");
 
-        // More robust HTML stripping with fallbacks
         try {
           setContent(stripHtml(noteResult.content || ""));
         } catch (contentError) {
           console.error("Error processing note content:", contentError);
-          // Fallback to raw content if stripping fails
           setContent(noteResult.content || "");
         }
 
@@ -73,7 +65,7 @@ const EditNote = () => {
         setIsPinned(Boolean(noteResult.isPinned));
         setIsPublic(Boolean(noteResult.isPublic));
       } catch (error) {
-        console.error("Error in fetchData:", error); // Detailed error logging
+        console.error("Error in fetchData:", error);
         setFetchError(error?.message || "Failed to fetch note data");
         toast.error(error?.message || "Failed to fetch note data");
       } finally {
@@ -84,7 +76,6 @@ const EditNote = () => {
     fetchData();
   }, [dispatch, id]);
 
-  // Handle tag selection/deselection
   const handleTagToggle = (tagId) => {
     setSelectedTags((prevSelectedTags) => {
       if (prevSelectedTags.includes(tagId)) {
@@ -95,7 +86,6 @@ const EditNote = () => {
     });
   };
 
-  // Handle form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -109,7 +99,6 @@ const EditNote = () => {
       return;
     }
 
-    // Escape HTML characters to prevent HTML injection
     const safeContent = content
       .replace(/&/g, "&amp;")
       .replace(/</g, "&lt;")
@@ -122,8 +111,8 @@ const EditNote = () => {
       title,
       content: safeContent,
       tags: selectedTags,
-      pinned: isPinned, // Ensure this matches your backend model
-      isPublic: isPublic, // Be explicit with the property name
+      pinned: isPinned,
+      isPublic: isPublic,
     };
 
     console.log("Submitting note with data:", noteData);
@@ -141,7 +130,6 @@ const EditNote = () => {
     navigate(`/notes/${id}`);
   };
 
-  // Show loading state while fetching note data
   if (isFetching) {
     return (
       <div className="flex justify-center items-center h-64">
@@ -153,7 +141,6 @@ const EditNote = () => {
     );
   }
 
-  // Show error state if note couldn't be fetched
   if (fetchError) {
     return (
       <div className="max-w-4xl mx-auto px-4">
@@ -181,7 +168,6 @@ const EditNote = () => {
         onSubmit={handleSubmit}
         className="bg-white rounded-lg shadow-md p-6"
       >
-        {/* Title Input */}
         <div className="mb-4">
           <label
             htmlFor="title"
@@ -200,7 +186,6 @@ const EditNote = () => {
           />
         </div>
 
-        {/* Content Editor */}
         <div className="mb-6">
           <label
             htmlFor="content"
@@ -209,14 +194,10 @@ const EditNote = () => {
             Content
           </label>
           <div className="border border-gray-300 rounded-md min-h-[300px] text-white">
-            {" "}
-            {/* Changed bg-black to bg-white */}
-            {/* Use plain text content for display */}
             <NoteEditor value={content} onChange={setContent} />
           </div>
         </div>
 
-        {/* Tags Section */}
         <div className="mb-5">
           <div className="flex justify-between items-center mb-2">
             <label className="block text-sm font-medium text-gray-700">
@@ -298,9 +279,7 @@ const EditNote = () => {
           )}
         </div>
 
-        {/* Note Options - Rewritten for more reliability */}
         <div className="mb-6 flex space-x-6">
-          {/* Pin checkbox */}
           <div className="flex items-center">
             <input
               id="pin-checkbox"
@@ -321,7 +300,6 @@ const EditNote = () => {
             </label>
           </div>
 
-          {/* Public checkbox */}
           <div className="flex items-center">
             <input
               id="public-checkbox"
@@ -343,9 +321,8 @@ const EditNote = () => {
           </div>
         </div>
 
-        {/* Action Buttons */}
         <div className="flex justify-between">
-          <div>{/* Add additional actions like delete if needed */}</div>
+          <div></div>
           <div className="flex space-x-4">
             <button
               type="button"

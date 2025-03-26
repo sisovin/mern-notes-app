@@ -4,7 +4,6 @@ import { useDispatch, useSelector } from "react-redux";
 import { login, loginSuccess } from "../features/auth/authSlice";
 import { toast } from "react-hot-toast";
 
-
 const Login = () => {
   const [formData, setFormData] = useState({
     email: "",
@@ -18,8 +17,6 @@ const Login = () => {
   const { isAuthenticated, isLoading, error, user } = useSelector(
     (state) => state.auth
   );
-
-  // Replace lines 20-55 with this updated code:
 
   useEffect(() => {
     // Check for token restoration on component mount
@@ -98,8 +95,6 @@ const Login = () => {
     setLocalError(null);
   };
 
-  // Update the handleSubmit function
-
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsSubmitting(true);
@@ -175,7 +170,6 @@ const Login = () => {
     }
   };
 
-  // Add this function inside your Login component
   const extractUserFromToken = (token) => {
     if (!token) return null;
 
@@ -204,9 +198,8 @@ const Login = () => {
     }
   };
 
-  // Wait for Redux state to initialize
   if (isAuthenticated === undefined || user === undefined) {
-    return <div>Loading...</div>; // Show a loading indicator
+    return <div>Loading...</div>;
   }
 
   return (
@@ -319,7 +312,6 @@ const Login = () => {
               ) : null}
               {isLoading || isSubmitting ? "Signing in..." : "Sign in"}
             </button>
-            {/* Add the end of the component, below the "Sign in" button */}
             <div className="mt-4 text-center">
               <button
                 type="button"
@@ -438,7 +430,6 @@ const Login = () => {
                 Debug Auth Status
               </button>
             </div>
-            {/* Add this at the bottom of your login form: */}
             <div className="mt-4 flex justify-between">
               <Link
                 to="/api-test"
