@@ -24,6 +24,7 @@ export const createUser = async (req, res) => {
       password,
       isAdmin,
       role,
+      bio,
     } = req.body;
 
     // Input validation
@@ -101,6 +102,7 @@ export const createUser = async (req, res) => {
       password: hashedPassword,
       isAdmin: isAdmin || false,
       role: userRole._id,
+      bio: bio || "",
       createdAt: new Date(),
       updatedAt: new Date(),
     });
@@ -878,4 +880,3 @@ export const updateNotificationSettings = async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 };
-

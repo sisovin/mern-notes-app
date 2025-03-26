@@ -1,5 +1,3 @@
-// Replace the entire file with this improved version
-
 import "./config/loadEnv.js";
 import checkEnvironmentVariables from "./config/envCheck.js";
 import { waitForConnection, checkDatabaseStatus } from "./config/checkDbStatus.js"; 
