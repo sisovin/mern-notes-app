@@ -1,0 +1,211 @@
+@import "tailwindcss/base";
+@import "tailwindcss/components";
+@import "tailwindcss/utilities";
+
+/* Additional custom styles */
+
+:root {
+  font-family: system-ui, Helvetica, Arial, sans-serif;
+  line-height: 1.5;
+  font-weight: 400;
+
+  /* Light theme variables (default) */
+  --background-color: #ffffff;
+  --text-color: #333333;
+  --card-background: #f8f9fa;
+  --border-color: #e2e8f0;
+  --primary-color: #3b82f6;
+  --secondary-color: #64748b;
+  --hover-color: #2563eb;
+}
+
+/* Dark mode styles when using data-theme attribute */
+[data-theme="dark"] {
+  --background-color: #1e293b;
+  --text-color: #f1f5f9;
+  --card-background: #334155;
+  --border-color: #475569;
+  --primary-color: #60a5fa;
+  --secondary-color: #94a3b8;
+  --hover-color: #3b82f6;
+}
+
+/* Dark mode styles when using Tailwind's dark class */
+.dark {
+  --background-color: #1e293b;
+  --text-color: #f1f5f9;
+  --card-background: #334155;
+  --border-color: #475569;
+  --primary-color: #60a5fa;
+  --secondary-color: #94a3b8;
+  --hover-color: #3b82f6;
+}
+/* Add these stronger text color rules */
+
+/* Force proper text contrast in dark mode */
+.dark {
+  --text-color: #f8fafc !important; /* Slightly brighter for better contrast */
+}
+
+/* Ensure all text elements follow the theme color in dark mode */
+.dark p, 
+.dark h1, 
+.dark h2, 
+.dark h3, 
+.dark h4, 
+.dark h5, 
+.dark h6, 
+.dark span, 
+.dark label, 
+.dark div {
+  color: var(--text-color);
+}
+
+/* Target specific Tailwind text color classes that might be overriding your theme */
+.dark .text-gray-700,
+.dark .text-gray-600,
+.dark .text-gray-500,
+.dark .text-black {
+  color: var(--text-color) !important;
+}
+
+/* Make form inputs visible in dark mode */
+.dark input,
+.dark textarea,
+.dark select {
+  background-color: var(--card-background);
+  color: var(--text-color);
+  border-color: var(--border-color);
+}
+
+/* Basic element styling */
+body {
+  background-color: var(--background-color);
+  color: var(--text-color);
+  transition: background-color 0.3s ease, color 0.3s ease;
+  margin: 0;
+  min-width: 320px;
+  min-height: 100vh;
+}
+
+/* Make sure Tailwind's dark mode also works directly */
+.dark body {
+  background-color: var(--background-color);
+  color: var(--text-color);
+}
+
+/* Apply theme colors to common elements */
+a {
+  font-weight: 500;
+  color: var(--primary-color);
+  text-decoration: inherit;
+}
+
+a:hover {
+  color: var(--hover-color);
+}
+
+button {
+  border-radius: 8px;
+  border: 1px solid transparent;
+  padding: 0.6em 1.2em;
+  font-size: 1em;
+  font-weight: 500;
+  font-family: inherit;
+  background-color: var(--card-background);
+  cursor: pointer;
+  transition: border-color 0.25s;
+}
+
+button:hover {
+  border-color: var(--primary-color);
+}
+
+/* Rest of your styles... *//* Add this near the bottom */
+.force-dark-theme {
+  background-color: var(--background-color) !important;
+  color: var(--text-color) !important;
+}
+
+/* Direct element targeting for non-Tailwind sections */
+html.dark {
+  background-color: #1e293b;
+}
+
+html[data-theme="dark"] {
+  background-color: #1e293b;
+}
+
+.dark #root {
+  background-color: #1e293b;
+}
+
+/* Remove the problematic media query that may be conflicting */
+@media (prefers-color-scheme: dark) {
+  /* Comment this out or remove it completely */
+  /*
+  :root:not([data-theme]) {
+    color: rgba(255, 255, 255, 0.87);
+    background-color: #242424;
+  }
+  :root:not([data-theme]) a:hover {
+    color: #747bff;
+  }
+  :root:not([data-theme]) button {
+    background-color: #1a1a1a;
+  }
+  */
+}
+
+/* Add these rules at the bottom of your CSS file */
+/* Component-specific overrides */
+.dark .card-title,
+.dark .note-content,
+.dark .sidebar-item,
+.dark .profile-name {
+  color: var(--text-color) !important;
+}
+
+/* Ensure buttons have readable text */
+.dark button {
+  color: var(--text-color);
+}
+
+/* Make links stand out more in dark mode */
+.dark a {
+  color: var(--primary-color);
+}
+
+/* Ensure dark theme applies with high specificity */
+html.dark,
+html.dark body, 
+html.dark #root,
+html.dark [class*="bg-white"],
+html.dark main,
+html.dark div[class*="bg-white"] {
+  background-color: var(--background-color) !important;
+  color: var(--text-color) !important;
+}
+
+html[data-theme="dark"],
+html[data-theme="dark"] body,
+html[data-theme="dark"] #root,
+html[data-theme="dark"] main,
+html[data-theme="dark"] div[class*="bg-white"] {
+  background-color: var(--background-color) !important;
+  color: var(--text-color) !important;
+}
+
+/* Ensure containers and main content areas get the dark background */
+.dark .bg-white,
+.dark .bg-gray-50,
+.dark .bg-gray-100 {
+  background-color: var(--card-background) !important;
+}
+
+/* Make sure tailwind's utilities don't override the theme */
+.dark .text-black,
+.dark .text-gray-800,
+.dark .text-gray-900 {
+  color: var(--text-color) !important;
+}

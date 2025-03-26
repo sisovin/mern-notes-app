@@ -1,0 +1,29 @@
+<!--notes-app\frontend\index.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MERN Notes App</title>
+  <script>
+  // Immediately apply stored theme to prevent flash of wrong theme
+  (function() {
+    const storedTheme = localStorage.getItem('theme') || 'system';
+    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    
+    // Apply dark mode if theme is dark OR if using system preference and system is dark
+    if (storedTheme === 'dark' || (storedTheme === 'system' && prefersDark)) {
+      document.documentElement.classList.add('dark');
+      document.documentElement.setAttribute('data-theme', 'dark');
+    } else {
+      document.documentElement.classList.remove('dark');
+      document.documentElement.setAttribute('data-theme', 'light');
+    }
+  })();
+</script>
+</head>
+<body>
+  <div id="root"></div>
+  <script type="module" src="/src/main.jsx"></script>
+</body>
+</html>
