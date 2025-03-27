@@ -21,18 +21,17 @@ import UserProfile from "./pages/UserProfile";
 import Settings from "./pages/Settings";
 import NoteDetails from "./pages/NoteDetails";
 import EditNote from "./pages/EditNote";
-// import ProtectedRoute from "./components/ProtectedRoute";
 import AdminPanel from "./pages/admin/AdminPanel";
-import AdminRoute from "./components/auth/AdminRoute.jsx";
 import UserManagement from "./pages/admin/UserManagement";
 import RoleManagement from "./pages/admin/RoleManagement";
 import NotFound from "./pages/NotFound";
 import Unauthorized from "./pages/Unauthorized";
-import AuthEventListener from "./components/AuthEventListener";
 
 // Components
 import MainLayout from "./components/layout/MainLayout";
 import PrivateRoute from "./components/auth/PrivateRoute";
+import AdminRoute from "./components/auth/AdminRoute";
+import AuthEventListener from "./components/AuthEventListener";
 
 // Redux actions
 import { getCurrentUser } from "./features/auth/authSlice";
@@ -50,8 +49,6 @@ function App() {
   const dispatch = useDispatch();
   const { isAuthenticated, user } = useSelector((state) => state.auth);
 
-  
-
   useEffect(() => {
     if (isAuthenticated) {
       dispatch(getCurrentUser())
@@ -59,12 +56,11 @@ function App() {
         .catch((error) => toast.error(error || "Failed to get user data"));
     }
   }, [isAuthenticated, dispatch]);
-  
-  
+
   return (
     <ThemeWrapper>
       <Router>
-        <AuthEventListener /> {/* Add this component */}
+        <AuthEventListener />
         <Toaster position="top-right" />
         <Routes>
           {/* Public routes */}
@@ -80,9 +76,8 @@ function App() {
           {/* Protected routes */}
           <Route path="/" element={<PrivateRoute element={<MainLayout />} />}>
             <Route index element={<Dashboard />} />
-            <Route path="dashboard" element={<Dashboard />} />{" "}
-            {/* Add this line */}
-            <Route path="notes" element={<NotesList />} /> {/* Add this line */}
+            <Route path="dashboard" element={<Dashboard />} />
+            <Route path="notes" element={<NotesList />} />
             <Route path="/create" element={<CreateNote />} />
             <Route path="notes/:id" element={<NoteDetails />} />
             <Route path="notes/:id/edit" element={<EditNote />} />
@@ -90,8 +85,7 @@ function App() {
             <Route path="profile" element={<UserProfile />} />
             <Route path="settings" element={<Settings />} />
           </Route>
-          
-          {/* Admin routes - with separate AdminRoute */}
+          {/* Admin routes */}
           <Route
             path="/admin"
             element={
